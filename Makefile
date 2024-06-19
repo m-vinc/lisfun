@@ -15,7 +15,6 @@ LISFUN_BINARY      := $(addprefix build/bin/lisfun_$(VERSION)_,$(OS_ARCHES))
 
 GOFILES := $(shell find . -type f -name '*.go')
 ASSETSFILES := $(shell find . -type f -name '*.css' -o -name '*.templ')
-GOFILES := $(shell find . -type f -name '*.go')
 
 deps:
 	go install github.com/air-verse/air@latest
