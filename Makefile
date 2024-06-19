@@ -17,17 +17,16 @@ GOFILES := $(shell find . -type f -name '*.go')
 ASSETSFILES := $(shell find . -type f -name '*.css' -o -name '*.templ')
 GOFILES := $(shell find . -type f -name '*.go')
 
+deps:
+	go install github.com/air-verse/air@latest
+
 lint:
 	golangci-lint run
 
 build: lint $(GOFILES) $(ASSETSFILES)
 	$(GO) build -o $(LISFUN_BINARY) ./cmd/lisfun/...
 
-air:
-	@go install github.com/air-verse/air@latest
-.PHONY: air
-
-watch: air
+watch:
 	$(AIR) -c $(AIR_CONFIG)
 .PHONY: watch
 
