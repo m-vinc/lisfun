@@ -1,6 +1,6 @@
 # Lisfun
 
-The main goal of this repository is to build a reliable starter project to bootstrap a new one using a really simple Go WEB stack: [Echo](https://echo.labstack.com/)/[Ent](https://entgo.io/)/[HTMX](https://htmx.org/) and everything we need to build a fancy UI like plain [Tailwindcss](https://tailwindcss.com/) or something like [daisyUI](https://daisyui.com/).
+The main goal of this repository is to build a reliable starter project to bootstrap a new one using a really simple Go WEB stack: [Echo](https://echo.labstack.com/)/[Ent](https://entgo.io/)/[Templ](https://templ.guide/)/[HTMX](https://htmx.org/) and everything we need to build a fancy UI like plain [Tailwindcss](https://tailwindcss.com/) or something like [daisyUI](https://daisyui.com/).
 
 I'll use that repository to explorate and learn htmx so consider every other branch than master like a sandbox.
 
@@ -8,8 +8,9 @@ I'll use that repository to explorate and learn htmx so consider every other bra
 
 First, you need installed on your dev environment :
 * Make
-* [Air](https://github.com/air-verse/air)
-* [golangci-lint](https://golangci-lint.run)
+* [Air](https://github.com/air-verse/air?tab=readme-ov-file#installation)
+* [golangci-lint](https://golangci-lint.run/welcome/install/)
+* [Templ](https://templ.guide/quick-start/installation)
 
 ## Developments
 
