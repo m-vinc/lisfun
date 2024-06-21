@@ -1,0 +1,12 @@
+package home
+
+import (
+  "lisfun/internal/app/common"
+  "lisfun/internal/app/views/layouts"
+)
+
+templ Home(view *common.ViewContext) {
+  @layouts.Main(view) {
+    <p>Home !</p>
+  }
+}

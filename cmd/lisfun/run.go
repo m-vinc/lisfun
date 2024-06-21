@@ -18,7 +18,7 @@ func (rootCmd *RootCmd) run() *serpent.Command {
 		Use:   "run",
 		Short: "Run lisfun",
 		Handler: func(inv *serpent.Invocation) error {
-			app, err := app.New(inv.Context(), &app.Config{
+			app, err := app.New(&app.Config{
 				Env:      env,
 				Port:     port,
 				LogLevel: loglevel,

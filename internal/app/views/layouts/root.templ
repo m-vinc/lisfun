@@ -1,0 +1,29 @@
+package layouts
+
+import (
+  "lisfun/internal/app/common"
+)
+
+templ Root(view *common.ViewContext) {
+  <!DOCTYPE html>
+	<html lang="en" data-theme="dark" class="h-[100vh] bg-neutral">
+		<head>
+      for _, meta := range view.Metas {
+			  <meta { meta... } />
+      }
+
+      for _, link := range view.Links {
+			  <link {link...} />
+  		}
+
+			<title>{ view.Title }</title>	
+		</head>
+		<body class="h-full sample-transition flex flex-col" hx-boost="true" hx-ext="response-targets,preload,multi-swap">
+		  <div>Root</div>
+		  { children... }
+      for _, script := range view.Scripts {
+			  <script { script... }></script>
+      }
+		</body>
+	</html>
+}

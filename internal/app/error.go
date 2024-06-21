@@ -2,6 +2,7 @@ package app
 
 import (
 	"lisfun/internal/app/common"
+	pageserrors "lisfun/internal/app/views/pages/errors"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
@@ -27,7 +28,15 @@ func (app *App) ErrorHandler() error {
 		case "application/json":
 			_ = echoContext.JSON(httpError.Code, map[string]any{"code": httpError.Code, "message": httpError.Message})
 		default:
-			_ = echoContext.HTML(httpError.Code, "<p>error</p>")
+			echoContext.Response().WriteHeader(httpError.Code)
+
+			_ = pageserrors.Error(
+				common.DefaultViewContext(app.Context()),
+				httpError,
+			).Render(
+				echoContext.Request().Context(),
+				echoContext.Response().Writer,
+			)
 		}
 	}
 

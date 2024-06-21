@@ -1,0 +1,14 @@
+package errors
+
+import (
+	"github.com/labstack/echo/v4"
+	"lisfun/internal/app/common"
+	"lisfun/internal/app/views/layouts"
+	"fmt"
+)
+
+templ Error(view *common.ViewContext, err *echo.HTTPError) {
+  @layouts.Main(view) {
+    <p>{ fmt.Sprintf("%d", err.Code) } - { err.Message.(string) }</p>
+  }
+}

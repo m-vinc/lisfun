@@ -24,7 +24,7 @@ type Config struct {
 	LogLevel string
 }
 
-func New(_ context.Context, config *Config) (*App, error) {
+func New(config *Config) (*App, error) {
 	app := &App{
 		Echo: echo.New(),
 
