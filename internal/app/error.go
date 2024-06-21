@@ -1,7 +1,7 @@
 package app
 
 import (
-	"lisfun/internal/app/models"
+	"lisfun/internal/app/common"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
@@ -12,10 +12,9 @@ func (app *App) ErrorHandler() error {
 		requestID := echoContext.Response().Header().Get(echo.HeaderXRequestID)
 		accept := echoContext.Request().Header.Get("Accept")
 
-		var httpError *echo.HTTPError
-
-		if !errors.As(err, httpError) {
-			httpError = models.ErrInternalServerError
+		httpError := &echo.HTTPError{}
+		if !errors.As(err, &httpError) {
+			httpError = common.ErrInternalServerError
 		}
 
 		app.logger.Error().

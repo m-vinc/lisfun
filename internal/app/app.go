@@ -2,7 +2,7 @@ package app
 
 import (
 	"context"
-	"lisfun/internal/app/models"
+	"lisfun/internal/app/common"
 	"sync"
 
 	"github.com/labstack/echo/v4"
@@ -57,8 +57,8 @@ func New(_ context.Context, config *Config) (*App, error) {
 	return app, nil
 }
 
-func (app *App) Context() *models.AppContext {
-	return &models.AppContext{
+func (app *App) Context() *common.AppContext {
+	return &common.AppContext{
 		Echo: app.Echo,
 	}
 }

@@ -1,0 +1,34 @@
+version: 3
+workdir: internal
+allow:
+  depOnAnyVendor: true
+components:
+  service:
+    in: services/*
+
+  controller:
+    in: app/controllers/*
+
+  app_common:
+    in: app/common
+
+  app:
+    in: app
+
+  model:
+    in:
+    - models
+
+deps:
+  controller:
+    mayDependOn:
+    - app_common
+
+  app_common:
+    mayDependOn:
+      - service
+
+  app:
+    mayDependOn:
+      - app_common
+      - controller

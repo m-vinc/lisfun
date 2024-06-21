@@ -1,7 +1,7 @@
 package home
 
 import (
-	"lisfun/internal/app/models"
+	"lisfun/internal/app/common"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -13,5 +13,5 @@ func (homeController *homeController) Home(echoContext echo.Context) error {
 }
 
 func (homeController *homeController) Err(_ echo.Context) error {
-	return errors.WithStack(models.ErrNotFound)
+	return errors.WithStack(common.ErrNotFound)
 }

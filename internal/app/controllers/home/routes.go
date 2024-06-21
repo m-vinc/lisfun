@@ -1,15 +1,15 @@
 package home
 
 import (
-	"lisfun/internal/app/models"
+	"lisfun/internal/app/common"
 )
 
-func Controller(context *models.AppContext) error {
+func Controller(context *common.AppContext) error {
 	return (&homeController{AppContext: context}).Register()
 }
 
 type homeController struct {
-	*models.AppContext
+	*common.AppContext
 }
 
 func (homeController *homeController) Register() error {
