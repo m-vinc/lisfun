@@ -1,0 +1,15 @@
+{
+  "name": "lisfun",
+  "version": "1.0.0",
+  "description": "The main goal of this repository is to build a reliable starter project to bootstrap a new one using a really simple Go WEB stack: [Echo](https://echo.labstack.com/)/[Ent](https://entgo.io/)/[Templ](https://templ.guide/)/[HTMX](https://htmx.org/) and everything we need to build a fancy UI like plain [Tailwindcss](https://tailwindcss.com/) or something like [daisyUI](https://daisyui.com/).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.4"
+  }
+}

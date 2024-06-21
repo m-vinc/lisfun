@@ -11,6 +11,7 @@ OS_ARCHES := darwin_arm64
 GORUN := go run -modfile=tools/go.mod
 GOLANGCI_LINT := $(GORUN) github.com/golangci/golangci-lint/cmd/golangci-lint
 GO_ARCH_LINT := $(GORUN) github.com/fe3dback/go-arch-lint
+GO_TEMPL := $(GORUN) github.com/a-h/templ/cmd/templ
 
 AIR := $(GORUN) github.com/air-verse/air
 AIR_CONFIG := .air.toml
@@ -22,12 +23,16 @@ ASSETSFILES := $(shell find . -type f -name '*.css' -o -name '*.templ')
 
 all: build
 
+gen: $(GOFILES)
+	$(GO_TEMPL) generate
+	npx tailwindcss -i ./internal/app/views/styles/main.css -o ./internal/app/assets/main.css
+
 lint:
 	$(GOLANGCI_LINT) run
 	$(GO_ARCH_LINT) check
 .PHONY: lint
 
-build: lint $(GOFILES) $(ASSETSFILES)
+build: $(GOFILES) $(ASSETSFILES) gen lint
 	$(GO) build -o $(LISFUN_BINARY) ./cmd/lisfun/...
 
 watch:

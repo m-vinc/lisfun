@@ -2,3 +2,5 @@
 /lisfun
 /build/bin
 /cmd/lisfun/lisfun
+
+node_modules
