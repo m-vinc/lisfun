@@ -6,6 +6,9 @@ components:
   service:
     in: services/*
 
+  view:
+    in: app/views/**
+
   controller:
     in: app/controllers/*
 
@@ -20,9 +23,15 @@ components:
     - models
 
 deps:
+  view:
+    mayDependOn:
+    - app_common
+    - view
+
   controller:
     mayDependOn:
     - app_common
+    - view
 
   app_common:
     mayDependOn:
@@ -30,5 +39,6 @@ deps:
 
   app:
     mayDependOn:
+      - view
       - app_common
       - controller

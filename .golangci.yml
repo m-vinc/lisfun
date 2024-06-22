@@ -1,3 +1,6 @@
+issues:
+  exclude-dirs:
+    - internal/app/views
 linters:
   enable-all: true
   disable:
