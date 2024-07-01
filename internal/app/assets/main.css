@@ -554,18 +554,10 @@ video {
   --tw-contain-style:  ;
 }
 
-.flex {
-  display: flex;
-}
-
 .h-\[100vh\] {
   height: 100vh;
 }
 
 .h-full {
   height: 100%;
-}
-
-.flex-col {
-  flex-direction: column;
 }

@@ -1,10 +1,10 @@
 package layouts
 
 import (
-  "lisfun/internal/app/common"
+  appcontext "lisfun/internal/app/context"
 )
 
-templ Main(view *common.ViewContext) {
+templ Main(view *appcontext.ViewContext) {
   @Root(view) {
     <div>Main layout</div>
     { children... }

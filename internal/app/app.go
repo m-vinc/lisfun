@@ -2,7 +2,7 @@ package app
 
 import (
 	"context"
-	"lisfun/internal/app/common"
+	appcontext "lisfun/internal/app/context"
 	"sync"
 
 	"github.com/labstack/echo/v4"
@@ -19,8 +19,9 @@ type App struct {
 }
 
 type Config struct {
-	Env      string
-	Port     string
+	Env  string
+	Port string
+
 	LogLevel string
 }
 
@@ -57,8 +58,8 @@ func New(config *Config) (*App, error) {
 	return app, nil
 }
 
-func (app *App) Context() *common.AppContext {
-	return &common.AppContext{
+func (app *App) Context() *appcontext.AppContext {
+	return &appcontext.AppContext{
 		Echo: app.Echo,
 	}
 }

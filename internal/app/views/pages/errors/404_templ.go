@@ -13,11 +13,11 @@ import "bytes"
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"lisfun/internal/app/common"
+	appcontext "lisfun/internal/app/context"
 	"lisfun/internal/app/views/layouts"
 )
 
-func Error(view *common.ViewContext, err *echo.HTTPError) templ.Component {
+func Error(view *appcontext.ViewContext, err *echo.HTTPError) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {

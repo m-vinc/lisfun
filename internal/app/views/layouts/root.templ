@@ -1,10 +1,10 @@
 package layouts
 
 import (
-  "lisfun/internal/app/common"
+  appcontext "lisfun/internal/app/context"
 )
 
-templ Root(view *common.ViewContext) {
+templ Root(view *appcontext.ViewContext) {
   <!DOCTYPE html>
 	<html lang="en" data-theme="dark" class="h-[100vh] bg-neutral">
 		<head>
@@ -15,11 +15,9 @@ templ Root(view *common.ViewContext) {
       for _, link := range view.Links {
 			  <link {link...} />
   		}
-
 			<title>{ view.Title }</title>	
 		</head>
-		<body class="h-full sample-transition flex flex-col" hx-boost="true" hx-ext="response-targets,preload,multi-swap">
-		  <div>Root</div>
+		<body class="h-full" hx-boost="true" hx-ext="response-targets,preload,multi-swap">
 		  { children... }
       for _, script := range view.Scripts {
 			  <script { script... }></script>

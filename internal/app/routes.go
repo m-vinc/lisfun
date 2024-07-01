@@ -2,8 +2,8 @@ package app
 
 import (
 	"embed"
-	"lisfun/internal/app/common"
 	"lisfun/internal/app/controllers/home"
+	apperrors "lisfun/internal/app/errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -14,6 +14,8 @@ import (
 var assetsFS embed.FS
 
 func (app *App) Routes() error {
+	app.Use(app.InjectRequestContext())
+
 	app.GET("/", func(c echo.Context) error {
 		return c.NoContent(http.StatusNoContent)
 	})
@@ -32,6 +34,6 @@ func (app *App) Static() {
 
 func (app *App) CatchAll() {
 	app.RouteNotFound("*", func(_ echo.Context) error {
-		return errors.WithStack(common.ErrNotFound)
+		return errors.WithStack(apperrors.ErrNotFound)
 	})
 }

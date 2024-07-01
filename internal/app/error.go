@@ -1,7 +1,8 @@
 package app
 
 import (
-	"lisfun/internal/app/common"
+	"lisfun/internal/app/context"
+	apperrors "lisfun/internal/app/errors"
 	pageserrors "lisfun/internal/app/views/pages/errors"
 
 	"github.com/labstack/echo/v4"
@@ -10,12 +11,14 @@ import (
 
 func (app *App) ErrorHandler() error {
 	app.HTTPErrorHandler = func(err error, echoContext echo.Context) {
+		requestContext := context.RequestContextFromEcho(echoContext)
+
 		requestID := echoContext.Response().Header().Get(echo.HeaderXRequestID)
 		accept := echoContext.Request().Header.Get("Accept")
 
 		httpError := &echo.HTTPError{}
 		if !errors.As(err, &httpError) {
-			httpError = common.ErrInternalServerError
+			httpError = apperrors.ErrInternalServerError
 		}
 
 		app.logger.Error().
@@ -31,7 +34,7 @@ func (app *App) ErrorHandler() error {
 			echoContext.Response().WriteHeader(httpError.Code)
 
 			_ = pageserrors.Error(
-				common.DefaultViewContext(app.Context()),
+				requestContext.ViewContext,
 				httpError,
 			).Render(
 				echoContext.Request().Context(),

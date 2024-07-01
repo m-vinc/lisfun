@@ -1,11 +1,11 @@
 package home
 
 import (
-  "lisfun/internal/app/common"
+  appcontext "lisfun/internal/app/context"
   "lisfun/internal/app/views/layouts"
 )
 
-templ Home(view *common.ViewContext) {
+templ Home(view *appcontext.ViewContext) {
   @layouts.Main(view) {
     <p>Home !</p>
   }

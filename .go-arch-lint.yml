@@ -12,8 +12,11 @@ components:
   controller:
     in: app/controllers/*
 
-  app_common:
-    in: app/common
+  app_context:
+    in: app/context
+
+  app_errors:
+    in: app/errors
 
   app:
     in: app
@@ -25,20 +28,23 @@ components:
 deps:
   view:
     mayDependOn:
-    - app_common
+    - app_context
     - view
 
   controller:
     mayDependOn:
-    - app_common
+    - app_context
+    - app_errors
     - view
 
-  app_common:
+  app_context:
     mayDependOn:
       - service
+      - app_errors
 
   app:
     mayDependOn:
       - view
-      - app_common
+      - app_context
+      - app_errors
       - controller

@@ -1,9 +1,9 @@
-package common
+package context
 
 import "github.com/a-h/templ"
 
 type ViewContext struct {
-	AppContext *AppContext
+	RequestContext *RequestContext
 
 	Title   string
 	Favicon string
@@ -13,11 +13,20 @@ type ViewContext struct {
 	Scripts []templ.Attributes
 }
 
-func DefaultViewContext(appContext *AppContext) *ViewContext {
-	viewContext := &ViewContext{
-		AppContext: appContext,
+func (viewContext *ViewContext) SetTitle(title string) {
+	if viewContext.Title == "" {
+		viewContext.Title = title
+		return
+	}
 
-		Title:   "Lisfun -",
+	viewContext.Title += " - " + title
+}
+
+func DefaultViewContext(requestContext *RequestContext) *ViewContext {
+	viewContext := &ViewContext{
+		RequestContext: requestContext,
+
+		Title:   "Lisfun",
 		Favicon: "",
 		Metas: []templ.Attributes{
 			{
@@ -40,11 +49,11 @@ func DefaultViewContext(appContext *AppContext) *ViewContext {
 				"type": "text/css",
 				"href": "https://css.gg/css",
 			}, {
-				"ref":  "stylesheet",
+				"rel":  "stylesheet",
 				"type": "text/css",
 				"href": "https://cdn.jsdelivr.net/npm/daisyui@4.4.10/dist/full.min.css",
 			}, {
-				"ref":  "stylesheet",
+				"rel":  "stylesheet",
 				"type": "text/css",
 				"href": "/assets/css/main.css",
 			},
@@ -57,10 +66,10 @@ func DefaultViewContext(appContext *AppContext) *ViewContext {
 				"integrity":   "sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX",
 			}, {
 				"type": "text/javascript",
-				"src":  "https://unpkg.com/htmx.org/dist/ext/json-enc.js",
+				"src":  "https://unpkg.com/htmx-ext-json-enc@2.0.0/json-enc.js",
 			}, {
 				"type": "text/javascript",
-				"src":  "https://unpkg.com/htmx.org@1.9.12/dist/ext/response-targets.js",
+				"src":  "https://unpkg.com/htmx-ext-response-targets@2.0.0/response-targets.js",
 			}, {
 				"type": "text/javascript",
 				"src":  "https://unpkg.com/hyperscript.org@0.9.12",
