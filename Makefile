@@ -10,6 +10,7 @@ OS_ARCHES := darwin_arm64
 
 GORUN := go run -modfile=tools/go.mod
 GOLANGCI_LINT := $(GORUN) github.com/golangci/golangci-lint/cmd/golangci-lint
+ENT := $(GORUN) entgo.io/ent/cmd/ent
 GO_ARCH_LINT := $(GORUN) github.com/fe3dback/go-arch-lint
 GO_TEMPL := $(GORUN) github.com/a-h/templ/cmd/templ
 
@@ -25,6 +26,7 @@ all: build
 
 gen: $(GOFILES)
 	$(GO_TEMPL) generate
+	$(ENT) generate ./internal/models/schema
 	npx tailwindcss -i ./internal/app/views/styles/main.css -o ./internal/app/assets/main.css
 
 lint:
