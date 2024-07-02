@@ -4,22 +4,22 @@ import (
   appcontext "lisfun/internal/app/context"
 )
 
-templ Root(view *appcontext.ViewContext) {
+templ Root(requestContext *appcontext.RequestContext) {
   <!DOCTYPE html>
 	<html lang="en" data-theme="dark" class="h-[100vh] bg-neutral">
 		<head>
-      for _, meta := range view.Metas {
+      for _, meta := range requestContext.ViewContext.Metas {
 			  <meta { meta... } />
       }
 
-      for _, link := range view.Links {
+      for _, link := range requestContext.ViewContext.Links {
 			  <link {link...} />
   		}
-			<title>{ view.Title }</title>	
+			<title>{ requestContext.ViewContext.Title }</title>	
 		</head>
 		<body class="h-full" hx-boost="true" hx-ext="response-targets,preload,multi-swap">
 		  { children... }
-      for _, script := range view.Scripts {
+      for _, script := range requestContext.ViewContext.Scripts {
 			  <script { script... }></script>
       }
 		</body>

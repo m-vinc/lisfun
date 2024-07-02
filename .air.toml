@@ -7,7 +7,7 @@ tmp_dir = "tmp"
   bin = "build/bin/lisfun_dev_darwin_arm64"
   cmd = "make"
   delay = 1000
-  exclude_dir = ["assets", "tmp", "vendor", "testdata", "tools", "node_modules"]
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "tools", "node_modules", "internal/models"]
   exclude_file = []
   exclude_regex = ["_test.go", "_templ.go"]
   exclude_unchanged = false
@@ -23,7 +23,7 @@ tmp_dir = "tmp"
   post_cmd = ["pkill lisfun"]
   pre_cmd = ["pkill lisfun || true"]
   rerun = false
-  rerun_delay = 500
+  rerun_delay = 1000
   send_interrupt = false
   stop_on_error = true
 

@@ -2,6 +2,7 @@ package app
 
 import (
 	"embed"
+	"lisfun/internal/app/controllers/auth"
 	"lisfun/internal/app/controllers/home"
 	apperrors "lisfun/internal/app/errors"
 	"net/http"
@@ -20,6 +21,7 @@ func (app *App) Routes() error {
 		return c.NoContent(http.StatusNoContent)
 	})
 
+	_ = auth.Controller(app.Context())
 	_ = home.Controller(app.Context())
 
 	app.Static()

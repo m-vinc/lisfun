@@ -7,6 +7,7 @@ import (
 )
 
 func (authController *authController) Callback(echoContext echo.Context, requestContext *context.RequestContext) error {
+	// Finish the callback
 	return echoContext.NoContent(204)
 
 	//return errors.WithStack(

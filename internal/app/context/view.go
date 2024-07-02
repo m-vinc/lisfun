@@ -3,8 +3,6 @@ package context
 import "github.com/a-h/templ"
 
 type ViewContext struct {
-	RequestContext *RequestContext
-
 	Title   string
 	Favicon string
 	Metas   []templ.Attributes
@@ -24,8 +22,6 @@ func (viewContext *ViewContext) SetTitle(title string) {
 
 func DefaultViewContext(requestContext *RequestContext) *ViewContext {
 	viewContext := &ViewContext{
-		RequestContext: requestContext,
-
 		Title:   "Lisfun",
 		Favicon: "",
 		Metas: []templ.Attributes{
@@ -55,7 +51,7 @@ func DefaultViewContext(requestContext *RequestContext) *ViewContext {
 			}, {
 				"rel":  "stylesheet",
 				"type": "text/css",
-				"href": "/assets/css/main.css",
+				"href": "/assets/main.css",
 			},
 		},
 		Scripts: []templ.Attributes{

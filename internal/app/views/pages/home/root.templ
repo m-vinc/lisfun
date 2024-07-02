@@ -5,8 +5,17 @@ import (
   "lisfun/internal/app/views/layouts"
 )
 
-templ Home(view *appcontext.ViewContext) {
-  @layouts.Main(view) {
+templ Home(requestContext *appcontext.RequestContext) {
+  @layouts.Main(requestContext) {
+    key: { requestContext.Config.SpotifyProvider.Key }
+    if requestContext.UserContext == nil {
+      <a hx-boost="false" href="/auth/spotify" class="btn py-2 px-4 flex flex-row justify-center">
+        <div class="h-full">
+          <img class="h-full" src="/assets/Spotify_Icon_CMYK_Green.png" />
+        </div>
+        <p class="flex-1">Login using Spotify</p>
+      </a>
+    }
     <p>Home !</p>
   }
 }

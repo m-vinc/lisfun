@@ -2,6 +2,7 @@ package main
 
 import (
 	"lisfun/internal/app"
+	"lisfun/internal/app/models"
 
 	"github.com/coder/serpent"
 	"github.com/pkg/errors"
@@ -12,16 +13,25 @@ func (rootCmd *RootCmd) run() *serpent.Command {
 		port     string
 		loglevel string
 		env      string
+
+		spotifyKey         string
+		spotifySecret      string
+		spotifyRedirectUrl string
 	)
 
 	cmd := &serpent.Command{
 		Use:   "run",
 		Short: "Run lisfun",
 		Handler: func(inv *serpent.Invocation) error {
-			app, err := app.New(&app.Config{
+			app, err := app.New(&models.AppConfig{
 				Env:      env,
 				Port:     port,
 				LogLevel: loglevel,
+				SpotifyProvider: &models.SpotifyProviderAppConfig{
+					Key:         spotifyKey,
+					Secret:      spotifySecret,
+					RedirectURL: spotifyRedirectUrl,
+				},
 			})
 			if err != nil {
 				return errors.WithStack(err)
@@ -52,6 +62,24 @@ func (rootCmd *RootCmd) run() *serpent.Command {
 		Description: "Log level of the global logger.",
 		Value:       serpent.StringOf(&loglevel),
 		Default:     "info",
+	}, {
+		Flag:        "spotify_key",
+		Env:         "LISFUN_SPOTIFY_KEY",
+		Description: "Spotify oauth app key.",
+		Value:       serpent.StringOf(&spotifyKey),
+		Required:    true,
+	}, {
+		Flag:        "spotify_secret",
+		Env:         "LISFUN_SPOTIFY_SECRET",
+		Description: "Spotify oauth app secret.",
+		Value:       serpent.StringOf(&spotifySecret),
+		Required:    true,
+	}, {
+		Flag:        "spotify_redirect_url",
+		Env:         "LISFUN_SPOTIFY_REDIRECT_URL",
+		Description: "Spotify oauth redirect url.",
+		Value:       serpent.StringOf(&spotifyRedirectUrl),
+		Required:    true,
 	}}
 
 	return cmd

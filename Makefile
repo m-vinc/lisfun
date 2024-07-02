@@ -26,7 +26,7 @@ all: build
 
 gen: $(GOFILES)
 	$(GO_TEMPL) generate
-	$(ENT) generate --target ./internal/models ./gen/schema
+	$(ENT) generate --target ./internal/data ./gen/schema
 	npx tailwindcss -i ./internal/app/views/styles/main.css -o ./internal/app/assets/main.css
 .PHONY: gen
 

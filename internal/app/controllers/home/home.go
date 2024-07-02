@@ -14,7 +14,7 @@ func (homeController *homeController) Home(echoContext echo.Context, requestCont
 
 	return errors.WithStack(
 		home.Home(
-			requestContext.ViewContext,
+			requestContext,
 		).Render(echoContext.Request().Context(), echoContext.Response().Writer),
 	)
 }

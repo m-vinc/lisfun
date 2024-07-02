@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	appcontext "lisfun/internal/app/context"
+	"lisfun/internal/app/models"
 	"sync"
 
 	"github.com/labstack/echo/v4"
@@ -14,18 +15,11 @@ type App struct {
 	*echo.Echo
 	o sync.Once
 
-	config *Config
+	config *models.AppConfig
 	logger zerolog.Logger
 }
 
-type Config struct {
-	Env  string
-	Port string
-
-	LogLevel string
-}
-
-func New(config *Config) (*App, error) {
+func New(config *models.AppConfig) (*App, error) {
 	app := &App{
 		Echo: echo.New(),
 
@@ -60,7 +54,8 @@ func New(config *Config) (*App, error) {
 
 func (app *App) Context() *appcontext.AppContext {
 	return &appcontext.AppContext{
-		Echo: app.Echo,
+		Echo:   app.Echo,
+		Config: app.config,
 	}
 }
 

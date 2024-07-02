@@ -14,7 +14,7 @@ import (
 	appcontext "lisfun/internal/app/context"
 )
 
-func Root(view *appcontext.ViewContext) templ.Component {
+func Root(requestContext *appcontext.RequestContext) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -31,7 +31,7 @@ func Root(view *appcontext.ViewContext) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		for _, meta := range view.Metas {
+		for _, meta := range requestContext.ViewContext.Metas {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<meta")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -45,7 +45,7 @@ func Root(view *appcontext.ViewContext) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		for _, link := range view.Links {
+		for _, link := range requestContext.ViewContext.Links {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<link")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -64,9 +64,9 @@ func Root(view *appcontext.ViewContext) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(view.Title)
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(requestContext.ViewContext.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/app/views/layouts/root.templ`, Line: 18, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/app/views/layouts/root.templ`, Line: 18, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -80,7 +80,7 @@ func Root(view *appcontext.ViewContext) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		for _, script := range view.Scripts {
+		for _, script := range requestContext.ViewContext.Scripts {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

@@ -4,8 +4,8 @@ import (
   appcontext "lisfun/internal/app/context"
 )
 
-templ Main(view *appcontext.ViewContext) {
-  @Root(view) {
+templ Main(requestContext *appcontext.RequestContext) {
+  @Root(requestContext) {
     <div>Main layout</div>
     { children... }
   }

@@ -34,7 +34,7 @@ func (app *App) ErrorHandler() error {
 			echoContext.Response().WriteHeader(httpError.Code)
 
 			_ = pageserrors.Error(
-				requestContext.ViewContext,
+				requestContext,
 				httpError,
 			).Render(
 				echoContext.Request().Context(),
