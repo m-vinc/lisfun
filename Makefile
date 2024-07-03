@@ -10,9 +10,11 @@ OS_ARCHES := darwin_arm64
 
 GORUN := go run -modfile=tools/go.mod
 GOLANGCI_LINT := $(GORUN) github.com/golangci/golangci-lint/cmd/golangci-lint
-ENT := $(GORUN) entgo.io/ent/cmd/ent
+ENT := $(GO) run ./gen/schema/generate/main.go
 GO_ARCH_LINT := $(GORUN) github.com/fe3dback/go-arch-lint
 GO_TEMPL := $(GORUN) github.com/a-h/templ/cmd/templ
+
+ATLAS := atlas
 
 AIR := $(GORUN) github.com/air-verse/air
 AIR_CONFIG := .air.toml
@@ -26,7 +28,7 @@ all: build
 
 gen: $(GOFILES)
 	$(GO_TEMPL) generate
-	$(ENT) generate --target ./internal/data ./gen/schema
+	$(ENT) ./gen/schema ./internal/db lisfun/internal/db
 	npx tailwindcss -i ./internal/app/views/styles/main.css -o ./internal/app/assets/main.css
 .PHONY: gen
 
@@ -41,6 +43,18 @@ build: $(GOFILES) $(ASSETSFILES) gen lint
 watch:
 	$(AIR) -c $(AIR_CONFIG)
 .PHONY: watch
+
+atlas_diff:
+	$(ATLAS) migrate diff $(MIGRATION_NAME) \
+  --dir "file://internal/db/migrate/migrations" \
+  --to "ent://gen/schema" \
+  --dev-url "docker://postgres/16/lisfun_atlas_migration?search_path=public"
+
+atlas_apply:
+	$(ATLAS) migrate apply \
+  --dir "file://internal/db/migrate/migrations" \
+  --url "${LISFUN_DATABASE_URL}"
+
 
 clean:
 	rm -rf build/

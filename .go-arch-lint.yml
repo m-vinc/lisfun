@@ -1,6 +1,6 @@
 version: 3
 workdir: internal
-excludeFiles: ["internal/models/*"]
+excludeFiles: ["internal/db/*"]
 allow:
   depOnAnyVendor: true
 components:
@@ -22,15 +22,25 @@ components:
   app:
     in: app
 
-  models:
+  model:
     in:
-    - models
     - app/models
+    - services/models
+  db:
+    in:
+    - db
 
 commonComponents:
-- models
+- model
 
 deps:
+  model:
+    mayDependOn:
+      - db
+
+  service:
+    mayDependOn:
+    - db
   view:
     mayDependOn:
     - app_context
@@ -49,7 +59,9 @@ deps:
 
   app:
     mayDependOn:
+      - db
       - view
       - app_context
       - app_errors
       - controller
+      - service

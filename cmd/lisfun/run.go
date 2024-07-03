@@ -14,9 +14,11 @@ func (rootCmd *RootCmd) run() *serpent.Command {
 		loglevel string
 		env      string
 
+		databaseURL string
+
 		spotifyKey         string
 		spotifySecret      string
-		spotifyRedirectUrl string
+		spotifyRedirectURL string
 	)
 
 	cmd := &serpent.Command{
@@ -30,8 +32,9 @@ func (rootCmd *RootCmd) run() *serpent.Command {
 				SpotifyProvider: &models.SpotifyProviderAppConfig{
 					Key:         spotifyKey,
 					Secret:      spotifySecret,
-					RedirectURL: spotifyRedirectUrl,
+					RedirectURL: spotifyRedirectURL,
 				},
+				DatabaseURL: databaseURL,
 			})
 			if err != nil {
 				return errors.WithStack(err)
@@ -45,42 +48,50 @@ func (rootCmd *RootCmd) run() *serpent.Command {
 		},
 	}
 
-	cmd.Options = serpent.OptionSet{{
-		Flag:        "env",
-		Env:         "LISFUN_ENV",
-		Description: "Current environment lisfun is running: [dev production].",
-		Value:       serpent.StringOf(&env),
-		Default:     "dev",
-	}, {
-		Flag:        "port",
-		Env:         "LISFUN_PORT",
-		Description: "Specify a lisfun port number.",
-		Value:       serpent.StringOf(&port),
-	}, {
-		Flag:        "log_level",
-		Env:         "LISFUN_LOG_LEVEL",
-		Description: "Log level of the global logger.",
-		Value:       serpent.StringOf(&loglevel),
-		Default:     "info",
-	}, {
-		Flag:        "spotify_key",
-		Env:         "LISFUN_SPOTIFY_KEY",
-		Description: "Spotify oauth app key.",
-		Value:       serpent.StringOf(&spotifyKey),
-		Required:    true,
-	}, {
-		Flag:        "spotify_secret",
-		Env:         "LISFUN_SPOTIFY_SECRET",
-		Description: "Spotify oauth app secret.",
-		Value:       serpent.StringOf(&spotifySecret),
-		Required:    true,
-	}, {
-		Flag:        "spotify_redirect_url",
-		Env:         "LISFUN_SPOTIFY_REDIRECT_URL",
-		Description: "Spotify oauth redirect url.",
-		Value:       serpent.StringOf(&spotifyRedirectUrl),
-		Required:    true,
-	}}
+	cmd.Options = serpent.OptionSet{
+		{
+			Flag:        "env",
+			Env:         "LISFUN_ENV",
+			Description: "Current environment lisfun is running: [dev production].",
+			Value:       serpent.StringOf(&env),
+			Default:     "dev",
+		}, {
+			Flag:        "port",
+			Env:         "LISFUN_PORT",
+			Description: "Specify a lisfun port number.",
+			Value:       serpent.StringOf(&port),
+		}, {
+			Flag:        "log_level",
+			Env:         "LISFUN_LOG_LEVEL",
+			Description: "Log level of the global logger.",
+			Value:       serpent.StringOf(&loglevel),
+			Default:     "info",
+		}, {
+			Flag:        "spotify_key",
+			Env:         "LISFUN_SPOTIFY_KEY",
+			Description: "Spotify oauth app key.",
+			Value:       serpent.StringOf(&spotifyKey),
+			Required:    true,
+		}, {
+			Flag:        "spotify_secret",
+			Env:         "LISFUN_SPOTIFY_SECRET",
+			Description: "Spotify oauth app secret.",
+			Value:       serpent.StringOf(&spotifySecret),
+			Required:    true,
+		}, {
+			Flag:        "spotify_redirect_url",
+			Env:         "LISFUN_SPOTIFY_REDIRECT_URL",
+			Description: "Spotify oauth redirect url.",
+			Value:       serpent.StringOf(&spotifyRedirectURL),
+			Required:    true,
+		}, {
+			Flag:        "database_url",
+			Env:         "LISFUN_DATABASE_URL",
+			Description: "Main database url used by lisfun.",
+			Value:       serpent.StringOf(&databaseURL),
+			Required:    true,
+		},
+	}
 
 	return cmd
 }
