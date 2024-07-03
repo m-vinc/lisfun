@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"log"
 	"net/url"
 
 	"github.com/markbates/goth"
@@ -19,6 +20,7 @@ func spotifyProvider(cfg *SpotifyProviderConfig) error {
 		return err
 	}
 
+	log.Printf("initialize spotify provider with %+v", cfg)
 	spotifyProvider := spotify.New(cfg.Key, cfg.Secret, cfg.RedirectURL)
 	goth.UseProviders(spotifyProvider)
 

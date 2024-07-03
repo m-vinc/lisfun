@@ -4,6 +4,8 @@ import (
 	"context"
 	appcontext "lisfun/internal/app/context"
 	"lisfun/internal/app/models"
+	"lisfun/internal/db"
+	"lisfun/internal/services/users"
 	"sync"
 
 	"github.com/labstack/echo/v4"
@@ -15,8 +17,12 @@ type App struct {
 	*echo.Echo
 	o sync.Once
 
-	config *models.AppConfig
 	logger zerolog.Logger
+	config *models.AppConfig
+
+	database *db.Client
+
+	usersService *users.Service
 }
 
 func New(config *models.AppConfig) (*App, error) {
@@ -30,6 +36,16 @@ func New(config *models.AppConfig) (*App, error) {
 
 	app.o.Do(func() {
 		err = app.Logger()
+		if err != nil {
+			return
+		}
+
+		err = app.Database()
+		if err != nil {
+			return
+		}
+
+		err = app.Services()
 		if err != nil {
 			return
 		}
@@ -56,6 +72,9 @@ func (app *App) Context() *appcontext.AppContext {
 	return &appcontext.AppContext{
 		Echo:   app.Echo,
 		Config: app.config,
+
+		Logger:       app.logger,
+		UsersService: app.usersService,
 	}
 }
 
