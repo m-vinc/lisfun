@@ -17,6 +17,8 @@ const (
 	FieldID = "id"
 	// FieldUsername holds the string denoting the username field in the database.
 	FieldUsername = "username"
+	// FieldFirstName holds the string denoting the first_name field in the database.
+	FieldFirstName = "first_name"
 	// FieldEmail holds the string denoting the email field in the database.
 	FieldEmail = "email"
 	// FieldExternalUserID holds the string denoting the external_user_id field in the database.
@@ -29,28 +31,25 @@ const (
 	EdgeTokens = "tokens"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// TokensTable is the table that holds the tokens relation/edge. The primary key declared below.
-	TokensTable = "user_tokens"
+	// TokensTable is the table that holds the tokens relation/edge.
+	TokensTable = "tokens"
 	// TokensInverseTable is the table name for the Token entity.
 	// It exists in this package in order to avoid circular dependency with the "token" package.
 	TokensInverseTable = "tokens"
+	// TokensColumn is the table column denoting the tokens relation/edge.
+	TokensColumn = "user_tokens"
 )
 
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
 	FieldUsername,
+	FieldFirstName,
 	FieldEmail,
 	FieldExternalUserID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
-
-var (
-	// TokensPrimaryKey and TokensColumn2 are the table columns denoting the
-	// primary key for the tokens relation (M2M).
-	TokensPrimaryKey = []string{"user_id", "token_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -82,6 +81,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByUsername orders the results by the username field.
 func ByUsername(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUsername, opts...).ToFunc()
+}
+
+// ByFirstName orders the results by the first_name field.
+func ByFirstName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFirstName, opts...).ToFunc()
 }
 
 // ByEmail orders the results by the email field.
@@ -121,6 +125,6 @@ func newTokensStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TokensInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, TokensTable, TokensPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, TokensTable, TokensColumn),
 	)
 }

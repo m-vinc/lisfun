@@ -6,7 +6,9 @@ import (
 
 templ Main(requestContext *appcontext.RequestContext) {
   @Root(requestContext) {
-    <div>Main layout</div>
-    { children... }
+    <div class="h-full pt-4 px-4">
+      <input type="checkbox" checked value="valentine" class="hidden checkbox theme-controller" />
+      { children... }
+    </div>
   }
 }

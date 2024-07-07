@@ -14,19 +14,29 @@ var (
 		{Name: "access_token", Type: field.TypeString},
 		{Name: "refresh_token", Type: field.TypeString},
 		{Name: "expire_at", Type: field.TypeTime},
+		{Name: "user_tokens", Type: field.TypeUUID, Nullable: true},
 	}
 	// TokensTable holds the schema information for the "tokens" table.
 	TokensTable = &schema.Table{
 		Name:       "tokens",
 		Columns:    TokensColumns,
 		PrimaryKey: []*schema.Column{TokensColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "tokens_users_tokens",
+				Columns:    []*schema.Column{TokensColumns[4]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "username", Type: field.TypeString},
+		{Name: "username", Type: field.TypeString, Nullable: true},
+		{Name: "first_name", Type: field.TypeString, Nullable: true},
 		{Name: "email", Type: field.TypeString},
-		{Name: "external_user_id", Type: field.TypeInt},
+		{Name: "external_user_id", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 	}
@@ -36,40 +46,13 @@ var (
 		Columns:    UsersColumns,
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
 	}
-	// UserTokensColumns holds the columns for the "user_tokens" table.
-	UserTokensColumns = []*schema.Column{
-		{Name: "user_id", Type: field.TypeUUID},
-		{Name: "token_id", Type: field.TypeUUID},
-	}
-	// UserTokensTable holds the schema information for the "user_tokens" table.
-	UserTokensTable = &schema.Table{
-		Name:       "user_tokens",
-		Columns:    UserTokensColumns,
-		PrimaryKey: []*schema.Column{UserTokensColumns[0], UserTokensColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "user_tokens_user_id",
-				Columns:    []*schema.Column{UserTokensColumns[0]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "user_tokens_token_id",
-				Columns:    []*schema.Column{UserTokensColumns[1]},
-				RefColumns: []*schema.Column{TokensColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		TokensTable,
 		UsersTable,
-		UserTokensTable,
 	}
 )
 
 func init() {
-	UserTokensTable.ForeignKeys[0].RefTable = UsersTable
-	UserTokensTable.ForeignKeys[1].RefTable = TokensTable
+	TokensTable.ForeignKeys[0].RefTable = UsersTable
 }

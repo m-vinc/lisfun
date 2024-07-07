@@ -1,6 +1,7 @@
 package app
 
 import (
+	"lisfun/internal/app/context"
 	"os"
 	"time"
 
@@ -42,12 +43,19 @@ func (app *App) Logger() error {
 		LogURI:    true,
 		LogStatus: true,
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+			requestContext := context.RequestContextFromEcho(c)
+
 			requestID := c.Response().Header().Get(echo.HeaderXRequestID)
-			logger.Info().
+			l := logger.Info().
 				Str("uri", v.URI).
 				Int("status", v.Status).
-				Str("request_id", requestID).
-				Msg("")
+				Str("request_id", requestID)
+
+			if requestContext.UserContext != nil {
+				l.Str("user_id", requestContext.UserContext.ID.String())
+			}
+
+			l.Msg("")
 
 			return nil
 		},

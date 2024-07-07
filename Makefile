@@ -17,7 +17,9 @@ GO_TEMPL := $(GORUN) github.com/a-h/templ/cmd/templ
 ATLAS := atlas
 
 AIR := $(GORUN) github.com/air-verse/air
-AIR_CONFIG := .air.toml
+AIR_WATCH_LINT_CONFIG := .air.watch_lint.toml
+AIR_WATCH_BUILD_CONFIG := .air.watch_build.toml
+AIR_TESTS_CONFIG := .air.tests.toml
 
 LISFUN_BINARY      := $(addprefix build/bin/lisfun_$(VERSION)_,$(OS_ARCHES))
 
@@ -37,11 +39,19 @@ lint:
 	$(GO_ARCH_LINT) check
 .PHONY: lint
 
-build: $(GOFILES) $(ASSETSFILES) gen lint
+build: $(GOFILES) $(ASSETSFILES)
 	$(GO) build -o $(LISFUN_BINARY) ./cmd/lisfun/...
 
-watch:
-	$(AIR) -c $(AIR_CONFIG)
+tests:
+	$(AIR) -c $(AIR_TESTS_CONFIG) -- $(AIR_ARGS)
+.PHONY: tests
+
+watch_build:
+	$(AIR) -c $(AIR_WATCH_BUILD_CONFIG) -- $(AIR_ARGS)
+.PHONY: watch
+
+watch_build_lint:
+	$(AIR) -c $(AIR_WATCH_LINT_CONFIG) -- $(AIR_ARGS)
 .PHONY: watch
 
 atlas_diff:

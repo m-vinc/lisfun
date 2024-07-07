@@ -31,6 +31,28 @@ func (uc *UserCreate) SetUsername(s string) *UserCreate {
 	return uc
 }
 
+// SetNillableUsername sets the "username" field if the given value is not nil.
+func (uc *UserCreate) SetNillableUsername(s *string) *UserCreate {
+	if s != nil {
+		uc.SetUsername(*s)
+	}
+	return uc
+}
+
+// SetFirstName sets the "first_name" field.
+func (uc *UserCreate) SetFirstName(s string) *UserCreate {
+	uc.mutation.SetFirstName(s)
+	return uc
+}
+
+// SetNillableFirstName sets the "first_name" field if the given value is not nil.
+func (uc *UserCreate) SetNillableFirstName(s *string) *UserCreate {
+	if s != nil {
+		uc.SetFirstName(*s)
+	}
+	return uc
+}
+
 // SetEmail sets the "email" field.
 func (uc *UserCreate) SetEmail(s string) *UserCreate {
 	uc.mutation.SetEmail(s)
@@ -38,8 +60,8 @@ func (uc *UserCreate) SetEmail(s string) *UserCreate {
 }
 
 // SetExternalUserID sets the "external_user_id" field.
-func (uc *UserCreate) SetExternalUserID(i int) *UserCreate {
-	uc.mutation.SetExternalUserID(i)
+func (uc *UserCreate) SetExternalUserID(s string) *UserCreate {
+	uc.mutation.SetExternalUserID(s)
 	return uc
 }
 
@@ -147,9 +169,6 @@ func (uc *UserCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
-	if _, ok := uc.mutation.Username(); !ok {
-		return &ValidationError{Name: "username", err: errors.New(`db: missing required field "User.username"`)}
-	}
 	if _, ok := uc.mutation.Email(); !ok {
 		return &ValidationError{Name: "email", err: errors.New(`db: missing required field "User.email"`)}
 	}
@@ -197,14 +216,18 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := uc.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
-		_node.Username = value
+		_node.Username = &value
+	}
+	if value, ok := uc.mutation.FirstName(); ok {
+		_spec.SetField(user.FieldFirstName, field.TypeString, value)
+		_node.FirstName = &value
 	}
 	if value, ok := uc.mutation.Email(); ok {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
-		_node.Email = value
+		_node.Email = &value
 	}
 	if value, ok := uc.mutation.ExternalUserID(); ok {
-		_spec.SetField(user.FieldExternalUserID, field.TypeInt, value)
+		_spec.SetField(user.FieldExternalUserID, field.TypeString, value)
 		_node.ExternalUserID = &value
 	}
 	if value, ok := uc.mutation.CreatedAt(); ok {
@@ -217,10 +240,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	}
 	if nodes := uc.mutation.TokensIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   user.TokensTable,
-			Columns: user.TokensPrimaryKey,
+			Columns: []string{user.TokensColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(token.FieldID, field.TypeUUID),
@@ -295,6 +318,30 @@ func (u *UserUpsert) UpdateUsername() *UserUpsert {
 	return u
 }
 
+// ClearUsername clears the value of the "username" field.
+func (u *UserUpsert) ClearUsername() *UserUpsert {
+	u.SetNull(user.FieldUsername)
+	return u
+}
+
+// SetFirstName sets the "first_name" field.
+func (u *UserUpsert) SetFirstName(v string) *UserUpsert {
+	u.Set(user.FieldFirstName, v)
+	return u
+}
+
+// UpdateFirstName sets the "first_name" field to the value that was provided on create.
+func (u *UserUpsert) UpdateFirstName() *UserUpsert {
+	u.SetExcluded(user.FieldFirstName)
+	return u
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (u *UserUpsert) ClearFirstName() *UserUpsert {
+	u.SetNull(user.FieldFirstName)
+	return u
+}
+
 // SetEmail sets the "email" field.
 func (u *UserUpsert) SetEmail(v string) *UserUpsert {
 	u.Set(user.FieldEmail, v)
@@ -308,7 +355,7 @@ func (u *UserUpsert) UpdateEmail() *UserUpsert {
 }
 
 // SetExternalUserID sets the "external_user_id" field.
-func (u *UserUpsert) SetExternalUserID(v int) *UserUpsert {
+func (u *UserUpsert) SetExternalUserID(v string) *UserUpsert {
 	u.Set(user.FieldExternalUserID, v)
 	return u
 }
@@ -316,12 +363,6 @@ func (u *UserUpsert) SetExternalUserID(v int) *UserUpsert {
 // UpdateExternalUserID sets the "external_user_id" field to the value that was provided on create.
 func (u *UserUpsert) UpdateExternalUserID() *UserUpsert {
 	u.SetExcluded(user.FieldExternalUserID)
-	return u
-}
-
-// AddExternalUserID adds v to the "external_user_id" field.
-func (u *UserUpsert) AddExternalUserID(v int) *UserUpsert {
-	u.Add(user.FieldExternalUserID, v)
 	return u
 }
 
@@ -408,6 +449,34 @@ func (u *UserUpsertOne) UpdateUsername() *UserUpsertOne {
 	})
 }
 
+// ClearUsername clears the value of the "username" field.
+func (u *UserUpsertOne) ClearUsername() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearUsername()
+	})
+}
+
+// SetFirstName sets the "first_name" field.
+func (u *UserUpsertOne) SetFirstName(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetFirstName(v)
+	})
+}
+
+// UpdateFirstName sets the "first_name" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateFirstName() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateFirstName()
+	})
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (u *UserUpsertOne) ClearFirstName() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearFirstName()
+	})
+}
+
 // SetEmail sets the "email" field.
 func (u *UserUpsertOne) SetEmail(v string) *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
@@ -423,16 +492,9 @@ func (u *UserUpsertOne) UpdateEmail() *UserUpsertOne {
 }
 
 // SetExternalUserID sets the "external_user_id" field.
-func (u *UserUpsertOne) SetExternalUserID(v int) *UserUpsertOne {
+func (u *UserUpsertOne) SetExternalUserID(v string) *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.SetExternalUserID(v)
-	})
-}
-
-// AddExternalUserID adds v to the "external_user_id" field.
-func (u *UserUpsertOne) AddExternalUserID(v int) *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.AddExternalUserID(v)
 	})
 }
 
@@ -696,6 +758,34 @@ func (u *UserUpsertBulk) UpdateUsername() *UserUpsertBulk {
 	})
 }
 
+// ClearUsername clears the value of the "username" field.
+func (u *UserUpsertBulk) ClearUsername() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearUsername()
+	})
+}
+
+// SetFirstName sets the "first_name" field.
+func (u *UserUpsertBulk) SetFirstName(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetFirstName(v)
+	})
+}
+
+// UpdateFirstName sets the "first_name" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateFirstName() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateFirstName()
+	})
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (u *UserUpsertBulk) ClearFirstName() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearFirstName()
+	})
+}
+
 // SetEmail sets the "email" field.
 func (u *UserUpsertBulk) SetEmail(v string) *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
@@ -711,16 +801,9 @@ func (u *UserUpsertBulk) UpdateEmail() *UserUpsertBulk {
 }
 
 // SetExternalUserID sets the "external_user_id" field.
-func (u *UserUpsertBulk) SetExternalUserID(v int) *UserUpsertBulk {
+func (u *UserUpsertBulk) SetExternalUserID(v string) *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.SetExternalUserID(v)
-	})
-}
-
-// AddExternalUserID adds v to the "external_user_id" field.
-func (u *UserUpsertBulk) AddExternalUserID(v int) *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.AddExternalUserID(v)
 	})
 }
 

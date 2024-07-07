@@ -327,7 +327,7 @@ func (c *TokenClient) QueryOwner(t *Token) *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(token.Table, token.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, token.OwnerTable, token.OwnerPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, token.OwnerTable, token.OwnerColumn),
 		)
 		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
 		return fromV, nil
@@ -476,7 +476,7 @@ func (c *UserClient) QueryTokens(u *User) *TokenQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(token.Table, token.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.TokensTable, user.TokensPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.TokensTable, user.TokensColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

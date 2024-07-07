@@ -1,19 +1,19 @@
 version: 3
 workdir: internal
-excludeFiles: ["internal/db/*"]
+excludeFiles: ["internal/db/*", ".*_test.go"]
 allow:
   depOnAnyVendor: true
 components:
-  service:
+  services:
     in: services/*
 
-  view:
+  views:
     in: app/views/**
 
-  controller:
+  controllers:
     in: app/controllers/*
 
-  app_context:
+  app_contexts:
     in: app/context
 
   app_errors:
@@ -22,46 +22,65 @@ components:
   app:
     in: app
 
-  model:
+  models:
     in:
     - app/models
     - services/models
+
   db:
     in:
-    - db
+    - db/**
+
+  types:
+    in:
+    - types/**
+
+  tests:
+    in:
+    - tests/**
 
 commonComponents:
-- model
+- models
+- tests
+- types
+- tests
 
 deps:
-  model:
+  tests:
+    mayDependOn:
+    - db
+
+  models:
     mayDependOn:
       - db
 
-  service:
+  services:
     mayDependOn:
     - db
-  view:
-    mayDependOn:
-    - app_context
-    - view
+    - types
+    - services
 
-  controller:
+  views:
     mayDependOn:
-    - app_context
+    - app_contexts
+    - views
+
+  controllers:
+    mayDependOn:
+    - app_contexts
     - app_errors
-    - view
+    - views
 
-  app_context:
+  app_contexts:
     mayDependOn:
-      - service
+      - services
       - app_errors
 
   app:
     mayDependOn:
       - db
-      - view
-      - app_context
+      - views
+      - app_contexts
       - app_errors
-      - controller
-      - service
+      - controllers
+      - services

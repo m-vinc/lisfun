@@ -5,6 +5,8 @@ import (
 	appcontext "lisfun/internal/app/context"
 	"lisfun/internal/app/models"
 	"lisfun/internal/db"
+	"lisfun/internal/services/spotify"
+	"lisfun/internal/services/tokens"
 	"lisfun/internal/services/users"
 	"sync"
 
@@ -22,7 +24,9 @@ type App struct {
 
 	database *db.Client
 
-	usersService *users.Service
+	usersService   *users.Service
+	tokensService  *tokens.Service
+	spotifyService *spotify.Service
 }
 
 func New(config *models.AppConfig) (*App, error) {
@@ -73,8 +77,10 @@ func (app *App) Context() *appcontext.AppContext {
 		Echo:   app.Echo,
 		Config: app.config,
 
-		Logger:       app.logger,
-		UsersService: app.usersService,
+		Logger:         app.logger,
+		UsersService:   app.usersService,
+		TokensService:  app.tokensService,
+		SpotifyService: app.spotifyService,
 	}
 }
 

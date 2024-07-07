@@ -13,7 +13,7 @@ type Token struct {
 
 func (Token) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("id", uuid.UUID{}),
+		field.UUID("id", uuid.UUID{}).Default(uuid.New),
 		field.String("access_token"),
 		field.String("refresh_token"),
 		field.Time("expire_at"),
@@ -22,6 +22,6 @@ func (Token) Fields() []ent.Field {
 
 func (Token) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("owner", User.Type).Ref("tokens"),
+		edge.From("owner", User.Type).Ref("tokens").Unique(),
 	}
 }

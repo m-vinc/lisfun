@@ -18,9 +18,10 @@ type User struct {
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New),
-		field.String("username"),
-		field.String("email"),
-		field.Int("external_user_id").Nillable(),
+		field.String("username").Nillable().Optional(),
+		field.String("first_name").Nillable().Optional(),
+		field.String("email").Nillable(),
+		field.String("external_user_id").Nillable(),
 		field.Time("created_at").
 			Default(time.Now).
 			Immutable().

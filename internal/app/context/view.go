@@ -41,14 +41,20 @@ func DefaultViewContext(requestContext *RequestContext) *ViewContext {
 
 		Links: []templ.Attributes{
 			{
+				"rel":  "icon",
+				"href": "/assets/favicon.ico",
+			},
+			{
 				"rel":  "stylesheet",
 				"type": "text/css",
 				"href": "https://css.gg/css",
-			}, {
+			},
+			{
 				"rel":  "stylesheet",
 				"type": "text/css",
 				"href": "https://cdn.jsdelivr.net/npm/daisyui@4.4.10/dist/full.min.css",
-			}, {
+			},
+			{
 				"rel":  "stylesheet",
 				"type": "text/css",
 				"href": "/assets/main.css",

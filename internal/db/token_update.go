@@ -72,19 +72,23 @@ func (tu *TokenUpdate) SetNillableExpireAt(t *time.Time) *TokenUpdate {
 	return tu
 }
 
-// AddOwnerIDs adds the "owner" edge to the User entity by IDs.
-func (tu *TokenUpdate) AddOwnerIDs(ids ...uuid.UUID) *TokenUpdate {
-	tu.mutation.AddOwnerIDs(ids...)
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (tu *TokenUpdate) SetOwnerID(id uuid.UUID) *TokenUpdate {
+	tu.mutation.SetOwnerID(id)
 	return tu
 }
 
-// AddOwner adds the "owner" edges to the User entity.
-func (tu *TokenUpdate) AddOwner(u ...*User) *TokenUpdate {
-	ids := make([]uuid.UUID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (tu *TokenUpdate) SetNillableOwnerID(id *uuid.UUID) *TokenUpdate {
+	if id != nil {
+		tu = tu.SetOwnerID(*id)
 	}
-	return tu.AddOwnerIDs(ids...)
+	return tu
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (tu *TokenUpdate) SetOwner(u *User) *TokenUpdate {
+	return tu.SetOwnerID(u.ID)
 }
 
 // Mutation returns the TokenMutation object of the builder.
@@ -92,25 +96,10 @@ func (tu *TokenUpdate) Mutation() *TokenMutation {
 	return tu.mutation
 }
 
-// ClearOwner clears all "owner" edges to the User entity.
+// ClearOwner clears the "owner" edge to the User entity.
 func (tu *TokenUpdate) ClearOwner() *TokenUpdate {
 	tu.mutation.ClearOwner()
 	return tu
-}
-
-// RemoveOwnerIDs removes the "owner" edge to User entities by IDs.
-func (tu *TokenUpdate) RemoveOwnerIDs(ids ...uuid.UUID) *TokenUpdate {
-	tu.mutation.RemoveOwnerIDs(ids...)
-	return tu
-}
-
-// RemoveOwner removes "owner" edges to User entities.
-func (tu *TokenUpdate) RemoveOwner(u ...*User) *TokenUpdate {
-	ids := make([]uuid.UUID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return tu.RemoveOwnerIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -160,39 +149,23 @@ func (tu *TokenUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tu.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   token.OwnerTable,
-			Columns: token.OwnerPrimaryKey,
+			Columns: []string{token.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tu.mutation.RemovedOwnerIDs(); len(nodes) > 0 && !tu.mutation.OwnerCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   token.OwnerTable,
-			Columns: token.OwnerPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tu.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   token.OwnerTable,
-			Columns: token.OwnerPrimaryKey,
+			Columns: []string{token.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
@@ -265,19 +238,23 @@ func (tuo *TokenUpdateOne) SetNillableExpireAt(t *time.Time) *TokenUpdateOne {
 	return tuo
 }
 
-// AddOwnerIDs adds the "owner" edge to the User entity by IDs.
-func (tuo *TokenUpdateOne) AddOwnerIDs(ids ...uuid.UUID) *TokenUpdateOne {
-	tuo.mutation.AddOwnerIDs(ids...)
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (tuo *TokenUpdateOne) SetOwnerID(id uuid.UUID) *TokenUpdateOne {
+	tuo.mutation.SetOwnerID(id)
 	return tuo
 }
 
-// AddOwner adds the "owner" edges to the User entity.
-func (tuo *TokenUpdateOne) AddOwner(u ...*User) *TokenUpdateOne {
-	ids := make([]uuid.UUID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (tuo *TokenUpdateOne) SetNillableOwnerID(id *uuid.UUID) *TokenUpdateOne {
+	if id != nil {
+		tuo = tuo.SetOwnerID(*id)
 	}
-	return tuo.AddOwnerIDs(ids...)
+	return tuo
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (tuo *TokenUpdateOne) SetOwner(u *User) *TokenUpdateOne {
+	return tuo.SetOwnerID(u.ID)
 }
 
 // Mutation returns the TokenMutation object of the builder.
@@ -285,25 +262,10 @@ func (tuo *TokenUpdateOne) Mutation() *TokenMutation {
 	return tuo.mutation
 }
 
-// ClearOwner clears all "owner" edges to the User entity.
+// ClearOwner clears the "owner" edge to the User entity.
 func (tuo *TokenUpdateOne) ClearOwner() *TokenUpdateOne {
 	tuo.mutation.ClearOwner()
 	return tuo
-}
-
-// RemoveOwnerIDs removes the "owner" edge to User entities by IDs.
-func (tuo *TokenUpdateOne) RemoveOwnerIDs(ids ...uuid.UUID) *TokenUpdateOne {
-	tuo.mutation.RemoveOwnerIDs(ids...)
-	return tuo
-}
-
-// RemoveOwner removes "owner" edges to User entities.
-func (tuo *TokenUpdateOne) RemoveOwner(u ...*User) *TokenUpdateOne {
-	ids := make([]uuid.UUID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return tuo.RemoveOwnerIDs(ids...)
 }
 
 // Where appends a list predicates to the TokenUpdate builder.
@@ -383,39 +345,23 @@ func (tuo *TokenUpdateOne) sqlSave(ctx context.Context) (_node *Token, err error
 	}
 	if tuo.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   token.OwnerTable,
-			Columns: token.OwnerPrimaryKey,
+			Columns: []string{token.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tuo.mutation.RemovedOwnerIDs(); len(nodes) > 0 && !tuo.mutation.OwnerCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   token.OwnerTable,
-			Columns: token.OwnerPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tuo.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   token.OwnerTable,
-			Columns: token.OwnerPrimaryKey,
+			Columns: []string{token.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),

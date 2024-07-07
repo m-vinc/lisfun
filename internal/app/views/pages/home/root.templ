@@ -7,7 +7,6 @@ import (
 
 templ Home(requestContext *appcontext.RequestContext) {
   @layouts.Main(requestContext) {
-    key: { requestContext.Config.SpotifyProvider.Key }
     if requestContext.UserContext == nil {
       <a hx-boost="false" href="/auth/spotify" class="btn py-2 px-4 flex flex-row justify-center">
         <div class="h-full">
@@ -15,7 +14,9 @@ templ Home(requestContext *appcontext.RequestContext) {
         </div>
         <p class="flex-1">Login using Spotify</p>
       </a>
+    } else {
+      <p>Welcome, { *requestContext.UserContext.User.ExternalUserID }</p>
+      <a hx-boost="false" href="/auth/spotify/logout">Logout</a>
     }
-    <p>Home !</p>
   }
 }

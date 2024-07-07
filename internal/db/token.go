@@ -5,6 +5,7 @@ package db
 import (
 	"fmt"
 	"lisfun/internal/db/token"
+	"lisfun/internal/db/user"
 	"strings"
 	"time"
 
@@ -27,23 +28,26 @@ type Token struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TokenQuery when eager-loading is set.
 	Edges        TokenEdges `json:"edges"`
+	user_tokens  *uuid.UUID
 	selectValues sql.SelectValues
 }
 
 // TokenEdges holds the relations/edges for other nodes in the graph.
 type TokenEdges struct {
 	// Owner holds the value of the owner edge.
-	Owner []*User `json:"owner,omitempty"`
+	Owner *User `json:"owner,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
 // OwnerOrErr returns the Owner value or an error if the edge
-// was not loaded in eager-loading.
-func (e TokenEdges) OwnerOrErr() ([]*User, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TokenEdges) OwnerOrErr() (*User, error) {
+	if e.Owner != nil {
 		return e.Owner, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "owner"}
 }
@@ -59,6 +63,8 @@ func (*Token) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullTime)
 		case token.FieldID:
 			values[i] = new(uuid.UUID)
+		case token.ForeignKeys[0]: // user_tokens
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -97,6 +103,13 @@ func (t *Token) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field expire_at", values[i])
 			} else if value.Valid {
 				t.ExpireAt = value.Time
+			}
+		case token.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field user_tokens", values[i])
+			} else if value.Valid {
+				t.user_tokens = new(uuid.UUID)
+				*t.user_tokens = *value.S.(*uuid.UUID)
 			}
 		default:
 			t.selectValues.Set(columns[i], values[i])

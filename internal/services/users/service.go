@@ -2,6 +2,7 @@ package users
 
 import (
 	"lisfun/internal/db"
+	"lisfun/internal/types"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog"
@@ -10,16 +11,15 @@ import (
 type Service struct {
 	db *db.Client
 
+	logger   zerolog.Logger
 	validate *validator.Validate
-
-	logger zerolog.Logger
 }
 
 func New(db *db.Client, logger zerolog.Logger) (*Service, error) {
 	svc := &Service{
 		db:       db,
-		validate: validator.New(),
 		logger:   logger,
+		validate: types.Validate,
 	}
 
 	return svc, nil

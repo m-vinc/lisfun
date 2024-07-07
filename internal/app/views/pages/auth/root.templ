@@ -1,0 +1,58 @@
+package auth
+
+import (
+  appcontext "lisfun/internal/app/context"
+  "lisfun/internal/app/views/layouts"
+  "lisfun/internal/app/forms"
+  "lisfun/internal/services/models"
+)
+
+templ CompleteRegistration(requestContext *appcontext.RequestContext, form *forms.Form, params models.UsersCompleteRegistrationParams) {
+  @layouts.Main(requestContext) {
+    <div class="h-full flex justify-center items-center">
+      <div class="mb-24 card bg-base-100 w-[600px] w-[50%] shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title text-2xl text-center">Lisfun</h2>
+          <p class="text-sm">Welcome to Lisfun, please give us the public username and firstname you want to use on Lisfun.</p>
+          <p class="text-sm">Choose carefully, those informations will be publicly available : </p>
+          <div id="registration-form">
+            @CompleteRegistrationForm(requestContext, form, params)
+          </div>
+        </div> 
+      </div> 
+    </div>
+  }
+}
+
+templ CompleteRegistrationForm(requestContext *appcontext.RequestContext, form *forms.Form, params models.UsersCompleteRegistrationParams) {
+  <form
+    class="mt-4 mx-auto"
+    hx-post="/auth/complete_registration"
+    hx-ext="json-enc"
+    hx-target="#registration-form"
+    hx-target-error="#registration-form"
+  >
+    <div class="flex justify-center flex-row gap-4">
+      <label class="form-control">
+        <input type="text" name="username" placeholder="Username" value={ params.Username } class={"input input-bordered", templ.KV("input-error", form.HasError("Username"))} />
+        <div class="label">
+          <span class={templ.KV("text-error", form.HasError("Username")), "label-text-alt"}>
+            { form.Error("Username") }
+          </span>
+        </div>
+      </label>
+      <label class="form-control">
+        <input type="text" name="firstname" value={ params.Firstname } placeholder="Firstname" class={"input input-bordered", templ.KV("input-error", form.HasError("Firstname"))} />
+        <div class="label">
+          <span class={templ.KV("text-error", form.HasError("Firstname")), "label-text-alt"}>
+            { form.Error("Firstname") }
+          </span>
+        </div>
+      </label> 
+    </div>
+    <div class="error-container"></div>
+    <div class="mt-4 card-actions justify-end">
+      <button type="submit" class="btn btn-primary text-primary-content">Enter Lisfun</button>
+    </div>
+  </form> 
+}

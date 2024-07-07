@@ -44,6 +44,32 @@ func (uu *UserUpdate) SetNillableUsername(s *string) *UserUpdate {
 	return uu
 }
 
+// ClearUsername clears the value of the "username" field.
+func (uu *UserUpdate) ClearUsername() *UserUpdate {
+	uu.mutation.ClearUsername()
+	return uu
+}
+
+// SetFirstName sets the "first_name" field.
+func (uu *UserUpdate) SetFirstName(s string) *UserUpdate {
+	uu.mutation.SetFirstName(s)
+	return uu
+}
+
+// SetNillableFirstName sets the "first_name" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableFirstName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetFirstName(*s)
+	}
+	return uu
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (uu *UserUpdate) ClearFirstName() *UserUpdate {
+	uu.mutation.ClearFirstName()
+	return uu
+}
+
 // SetEmail sets the "email" field.
 func (uu *UserUpdate) SetEmail(s string) *UserUpdate {
 	uu.mutation.SetEmail(s)
@@ -59,23 +85,16 @@ func (uu *UserUpdate) SetNillableEmail(s *string) *UserUpdate {
 }
 
 // SetExternalUserID sets the "external_user_id" field.
-func (uu *UserUpdate) SetExternalUserID(i int) *UserUpdate {
-	uu.mutation.ResetExternalUserID()
-	uu.mutation.SetExternalUserID(i)
+func (uu *UserUpdate) SetExternalUserID(s string) *UserUpdate {
+	uu.mutation.SetExternalUserID(s)
 	return uu
 }
 
 // SetNillableExternalUserID sets the "external_user_id" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableExternalUserID(i *int) *UserUpdate {
-	if i != nil {
-		uu.SetExternalUserID(*i)
+func (uu *UserUpdate) SetNillableExternalUserID(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetExternalUserID(*s)
 	}
-	return uu
-}
-
-// AddExternalUserID adds i to the "external_user_id" field.
-func (uu *UserUpdate) AddExternalUserID(i int) *UserUpdate {
-	uu.mutation.AddExternalUserID(i)
 	return uu
 }
 
@@ -180,14 +199,20 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
 	}
+	if uu.mutation.UsernameCleared() {
+		_spec.ClearField(user.FieldUsername, field.TypeString)
+	}
+	if value, ok := uu.mutation.FirstName(); ok {
+		_spec.SetField(user.FieldFirstName, field.TypeString, value)
+	}
+	if uu.mutation.FirstNameCleared() {
+		_spec.ClearField(user.FieldFirstName, field.TypeString)
+	}
 	if value, ok := uu.mutation.Email(); ok {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
 	}
 	if value, ok := uu.mutation.ExternalUserID(); ok {
-		_spec.SetField(user.FieldExternalUserID, field.TypeInt, value)
-	}
-	if value, ok := uu.mutation.AddedExternalUserID(); ok {
-		_spec.AddField(user.FieldExternalUserID, field.TypeInt, value)
+		_spec.SetField(user.FieldExternalUserID, field.TypeString, value)
 	}
 	if value, ok := uu.mutation.UpdatedAt(); ok {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
@@ -197,10 +222,10 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.TokensCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   user.TokensTable,
-			Columns: user.TokensPrimaryKey,
+			Columns: []string{user.TokensColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(token.FieldID, field.TypeUUID),
@@ -210,10 +235,10 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := uu.mutation.RemovedTokensIDs(); len(nodes) > 0 && !uu.mutation.TokensCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   user.TokensTable,
-			Columns: user.TokensPrimaryKey,
+			Columns: []string{user.TokensColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(token.FieldID, field.TypeUUID),
@@ -226,10 +251,10 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := uu.mutation.TokensIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   user.TokensTable,
-			Columns: user.TokensPrimaryKey,
+			Columns: []string{user.TokensColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(token.FieldID, field.TypeUUID),
@@ -274,6 +299,32 @@ func (uuo *UserUpdateOne) SetNillableUsername(s *string) *UserUpdateOne {
 	return uuo
 }
 
+// ClearUsername clears the value of the "username" field.
+func (uuo *UserUpdateOne) ClearUsername() *UserUpdateOne {
+	uuo.mutation.ClearUsername()
+	return uuo
+}
+
+// SetFirstName sets the "first_name" field.
+func (uuo *UserUpdateOne) SetFirstName(s string) *UserUpdateOne {
+	uuo.mutation.SetFirstName(s)
+	return uuo
+}
+
+// SetNillableFirstName sets the "first_name" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableFirstName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetFirstName(*s)
+	}
+	return uuo
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (uuo *UserUpdateOne) ClearFirstName() *UserUpdateOne {
+	uuo.mutation.ClearFirstName()
+	return uuo
+}
+
 // SetEmail sets the "email" field.
 func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
 	uuo.mutation.SetEmail(s)
@@ -289,23 +340,16 @@ func (uuo *UserUpdateOne) SetNillableEmail(s *string) *UserUpdateOne {
 }
 
 // SetExternalUserID sets the "external_user_id" field.
-func (uuo *UserUpdateOne) SetExternalUserID(i int) *UserUpdateOne {
-	uuo.mutation.ResetExternalUserID()
-	uuo.mutation.SetExternalUserID(i)
+func (uuo *UserUpdateOne) SetExternalUserID(s string) *UserUpdateOne {
+	uuo.mutation.SetExternalUserID(s)
 	return uuo
 }
 
 // SetNillableExternalUserID sets the "external_user_id" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableExternalUserID(i *int) *UserUpdateOne {
-	if i != nil {
-		uuo.SetExternalUserID(*i)
+func (uuo *UserUpdateOne) SetNillableExternalUserID(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetExternalUserID(*s)
 	}
-	return uuo
-}
-
-// AddExternalUserID adds i to the "external_user_id" field.
-func (uuo *UserUpdateOne) AddExternalUserID(i int) *UserUpdateOne {
-	uuo.mutation.AddExternalUserID(i)
 	return uuo
 }
 
@@ -440,14 +484,20 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if value, ok := uuo.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
 	}
+	if uuo.mutation.UsernameCleared() {
+		_spec.ClearField(user.FieldUsername, field.TypeString)
+	}
+	if value, ok := uuo.mutation.FirstName(); ok {
+		_spec.SetField(user.FieldFirstName, field.TypeString, value)
+	}
+	if uuo.mutation.FirstNameCleared() {
+		_spec.ClearField(user.FieldFirstName, field.TypeString)
+	}
 	if value, ok := uuo.mutation.Email(); ok {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
 	}
 	if value, ok := uuo.mutation.ExternalUserID(); ok {
-		_spec.SetField(user.FieldExternalUserID, field.TypeInt, value)
-	}
-	if value, ok := uuo.mutation.AddedExternalUserID(); ok {
-		_spec.AddField(user.FieldExternalUserID, field.TypeInt, value)
+		_spec.SetField(user.FieldExternalUserID, field.TypeString, value)
 	}
 	if value, ok := uuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
@@ -457,10 +507,10 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if uuo.mutation.TokensCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   user.TokensTable,
-			Columns: user.TokensPrimaryKey,
+			Columns: []string{user.TokensColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(token.FieldID, field.TypeUUID),
@@ -470,10 +520,10 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if nodes := uuo.mutation.RemovedTokensIDs(); len(nodes) > 0 && !uuo.mutation.TokensCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   user.TokensTable,
-			Columns: user.TokensPrimaryKey,
+			Columns: []string{user.TokensColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(token.FieldID, field.TypeUUID),
@@ -486,10 +536,10 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if nodes := uuo.mutation.TokensIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   user.TokensTable,
-			Columns: user.TokensPrimaryKey,
+			Columns: []string{user.TokensColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(token.FieldID, field.TypeUUID),

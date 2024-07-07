@@ -49,19 +49,31 @@ func (tc *TokenCreate) SetID(u uuid.UUID) *TokenCreate {
 	return tc
 }
 
-// AddOwnerIDs adds the "owner" edge to the User entity by IDs.
-func (tc *TokenCreate) AddOwnerIDs(ids ...uuid.UUID) *TokenCreate {
-	tc.mutation.AddOwnerIDs(ids...)
+// SetNillableID sets the "id" field if the given value is not nil.
+func (tc *TokenCreate) SetNillableID(u *uuid.UUID) *TokenCreate {
+	if u != nil {
+		tc.SetID(*u)
+	}
 	return tc
 }
 
-// AddOwner adds the "owner" edges to the User entity.
-func (tc *TokenCreate) AddOwner(u ...*User) *TokenCreate {
-	ids := make([]uuid.UUID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (tc *TokenCreate) SetOwnerID(id uuid.UUID) *TokenCreate {
+	tc.mutation.SetOwnerID(id)
+	return tc
+}
+
+// SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
+func (tc *TokenCreate) SetNillableOwnerID(id *uuid.UUID) *TokenCreate {
+	if id != nil {
+		tc = tc.SetOwnerID(*id)
 	}
-	return tc.AddOwnerIDs(ids...)
+	return tc
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (tc *TokenCreate) SetOwner(u *User) *TokenCreate {
+	return tc.SetOwnerID(u.ID)
 }
 
 // Mutation returns the TokenMutation object of the builder.
@@ -71,6 +83,7 @@ func (tc *TokenCreate) Mutation() *TokenMutation {
 
 // Save creates the Token in the database.
 func (tc *TokenCreate) Save(ctx context.Context) (*Token, error) {
+	tc.defaults()
 	return withHooks(ctx, tc.sqlSave, tc.mutation, tc.hooks)
 }
 
@@ -93,6 +106,14 @@ func (tc *TokenCreate) Exec(ctx context.Context) error {
 func (tc *TokenCreate) ExecX(ctx context.Context) {
 	if err := tc.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (tc *TokenCreate) defaults() {
+	if _, ok := tc.mutation.ID(); !ok {
+		v := token.DefaultID()
+		tc.mutation.SetID(v)
 	}
 }
 
@@ -157,10 +178,10 @@ func (tc *TokenCreate) createSpec() (*Token, *sqlgraph.CreateSpec) {
 	}
 	if nodes := tc.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   token.OwnerTable,
-			Columns: token.OwnerPrimaryKey,
+			Columns: []string{token.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
@@ -169,6 +190,7 @@ func (tc *TokenCreate) createSpec() (*Token, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.user_tokens = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -406,6 +428,7 @@ func (tcb *TokenCreateBulk) Save(ctx context.Context) ([]*Token, error) {
 	for i := range tcb.builders {
 		func(i int, root context.Context) {
 			builder := tcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TokenMutation)
 				if !ok {
